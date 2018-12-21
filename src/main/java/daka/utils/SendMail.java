@@ -9,6 +9,9 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import daka.enums.ResultEnum;
+import daka.exception.MyException;
+
 
 public class SendMail {
   
@@ -34,7 +37,7 @@ public class SendMail {
         // 生成附件组件的实例  
         
     } 
-    public static boolean send(String to, String mailSubject, String mailBody)  {  
+    public static void send(String to, String mailSubject, String mailBody)  {  
     	init();  
         setFrom(sendUserName);  
         setTo(to);  
@@ -51,11 +54,11 @@ public class SendMail {
 	        System.out.println("发送邮件成功！");  
 	        transport.close();  
 		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
-			return false;
+			System.out.println("发送邮件失败");
+			throw new MyException(ResultEnum.MAIL_WRONG);
 		}  
-        
-        return true;  
+    	System.out.println("发送邮件成功");
+        throw new MyException(ResultEnum.SUCCESS);
     } 
     /** 
      * 设置邮件主题 

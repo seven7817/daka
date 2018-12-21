@@ -1,10 +1,10 @@
-package daka.controller.exception;
+package daka.exception;
 
-import daka.controller.enums.ResultEnum;
+import daka.enums.ResultEnum;
 
-public class WrongMailException extends RuntimeException {
+public class MyException extends RuntimeException {
 	private Integer code ;
-	public WrongMailException(ResultEnum resultEnum) {
+	public MyException(ResultEnum resultEnum) {
 		super(resultEnum.getMsg());
 		this.code = resultEnum.getCode();
 	}
