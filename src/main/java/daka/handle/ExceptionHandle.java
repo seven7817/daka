@@ -5,9 +5,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import daka.enums.ResultEnum;
-import daka.exception.MailException;
+import daka.exception.MyException;
 import daka.model.Result;
 import daka.utils.ResultUtil;
+import net.sf.json.JSONArray;
 
 /**@version:
  * @Description: 
@@ -18,15 +19,16 @@ import daka.utils.ResultUtil;
 @ControllerAdvice
 public class ExceptionHandle {
 	@ExceptionHandler(value=Exception.class)
-	@ResponseBody
-	public Result handle(Exception e) {
-		if(e instanceof MailException) {
-			MailException mailException = (MailException)e;
-			return ResultUtil.error(mailException.getCode(), mailException.getMessage());
+	public @ResponseBody String handle(Exception e) {
+		if(e instanceof MyException) {
+			MyException mailException = (MyException)e;
+			System.out.println("捕获到异常了");
+			JSONArray json = JSONArray.fromObject(ResultUtil.error(mailException.getCode(), mailException.getMessage()));
+			return json.toString();
 		}
 		else {
 			e.printStackTrace();
-			return ResultUtil.error(ResultEnum.UNKONW_ERROR.getCode(), ResultEnum.UNKONW_ERROR.getMsg());
+			return JSONArray.fromObject(ResultUtil.error(ResultEnum.UNKONW_ERROR.getCode(),ResultEnum.UNKONW_ERROR.getMsg())).toString();
 		}
 	}
 

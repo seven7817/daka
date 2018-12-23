@@ -10,7 +10,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import daka.enums.ResultEnum;
-import daka.exception.MailException;
+import daka.exception.MyException;
 
 
 public class SendMail {
@@ -54,10 +54,11 @@ public class SendMail {
 	        System.out.println("发送邮件成功！");  
 	        transport.close();  
 		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
-			throw new MailException(ResultEnum.MAIL_WRONG);
+			System.out.println("发送邮件失败");
+			throw new MyException(ResultEnum.MAIL_WRONG);
 		}  
-        throw new MailException(ResultEnum.SUCCESS);
+    	System.out.println("发送邮件成功");
+        throw new MyException(ResultEnum.SUCCESS);
     } 
     /** 
      * 设置邮件主题 

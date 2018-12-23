@@ -2,9 +2,9 @@ package daka.exception;
 
 import daka.enums.ResultEnum;
 
-public class MailException extends RuntimeException {
+public class MyException extends RuntimeException {
 	private Integer code ;
-	public MailException(ResultEnum resultEnum) {
+	public MyException(ResultEnum resultEnum) {
 		super(resultEnum.getMsg());
 		this.code = resultEnum.getCode();
 	}

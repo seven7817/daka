@@ -1,5 +1,6 @@
 package daka.utils;
 
+import daka.exception.MyException;
 import daka.model.Result;
 
 /**@version:
@@ -25,4 +26,5 @@ public class ResultUtil {
 		result.setMsg(msg);
 		return result;
 	}
+	
 }
