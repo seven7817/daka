@@ -34,8 +34,9 @@
 	  	<!-- 把sessiono和线程绑定，从而实现一个线程只有一个session -->
 	  	<property name="hibernate.current_session_context_class">thread</property>
 		<!-- 第三部分：映射配置文件的位置 -->
-		
-		<mapping class = "daka.model.RegisterEmailVerificationCodde"></mapping>
+		<mapping class = "daka.model.User"></mapping>
+		<mapping class = "daka.model.RegisterEmailVerificationCode"></mapping>
+						  
 	</session-factory>
 </hibernate-configuration>
 

@@ -36,7 +36,7 @@ public class test {
 		System.out.println("bbbbbbbb");
 		
 		User user = new User();
-		user.setName("孙政");
+		user.setEmail("孙政");
 		user.setPassword("123");
 		JSONArray json = JSONArray.fromObject(user);
 		return json.toString();
@@ -44,25 +44,18 @@ public class test {
 	@PostMapping(value="/getEmail",produces = "application/json;charset=utf-8")
 	public void getEmail(@RequestBody String Email) {
 		System.out.println(Email+"controller里面的getEmail");	
-		JSONObject jsonobject = JSONObject.fromObject(Email);
-		verificationCode = GetVerificationCode.getCode();
-		SendMail.send( jsonobject.getString("Email"),"打卡系统注册邮箱验证","尊敬的用户：您正在进行账户注册，验证码："+verificationCode+"，请及时输入验证码。若非本人操作，请忽视此邮件。");
-		
-//		JSONArray json = JSONArray.fromObject(result);
-//		return json.toString();
+		loginRegisterService.getEmail(JSONObject.fromObject(Email).getString("Email"));
 	}
 	@PostMapping(value="/register",produces = "application/json;charset=utf-8")
 	public void register(@RequestBody String userInfo) {
-		
-//		System.out.println(userInfo+"controller里面的register");	
-//		JSONObject jsonobject = JSONObject.fromObject(userInfo);
-//		System.out.println(jsonobject.getString("Email"));
-//		System.out.println(jsonobject.getString("code"));
-//		System.out.println(jsonobject.getString("password"));
-		
-		loginRegisterService.Register(userInfo);
-		
-		
+		System.out.println(userInfo);
+		loginRegisterService.register(userInfo);
 	}
+	@PostMapping(value="/login",produces = "application/json;charset=utf-8")
+	public void login(@RequestBody String userInfo) {
+		System.out.println("login"+userInfo);
+		loginRegisterService.login(userInfo);
+	}
+	
 	
 }

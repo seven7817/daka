@@ -20,7 +20,7 @@ public class ResultUtil {
 	public static Result success() {
 		return success(null);
 	}
-	public static  Result error(Integer code,String msg) {
+	public static Result error(Integer code,String msg) {
 		Result result = new Result();
 		result.setCode(code);
 		result.setMsg(msg);

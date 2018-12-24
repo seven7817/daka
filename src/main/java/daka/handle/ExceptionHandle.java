@@ -23,8 +23,16 @@ public class ExceptionHandle {
 		if(e instanceof MyException) {
 			MyException mailException = (MyException)e;
 			System.out.println("捕获到异常了");
-			JSONArray json = JSONArray.fromObject(ResultUtil.error(mailException.getCode(), mailException.getMessage()));
-			return json.toString();
+			JSONArray json = null;
+			if(mailException.getCode()==0) {
+				json = JSONArray.fromObject(ResultUtil.success(mailException.getObject()));
+				return json.toString();
+			}
+			else {
+				
+				json = JSONArray.fromObject(ResultUtil.error(mailException.getCode(), mailException.getMessage()));
+				return json.toString();
+			}
 		}
 		else {
 			e.printStackTrace();
