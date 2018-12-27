@@ -13,9 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import daka.model.User;
 import daka.service.LoginRegisterService;
-import daka.utils.GetVerificationCode;
-
-import daka.utils.SendMail;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -44,8 +41,14 @@ public class test {
 	@PostMapping(value="/getEmail",produces = "application/json;charset=utf-8")
 	public void getEmail(@RequestBody String Email) {
 		System.out.println(Email+"controller里面的getEmail");	
-		loginRegisterService.getEmail(JSONObject.fromObject(Email).getString("Email"));
+		String operation = JSONObject.fromObject(Email).getString("operation");
+		if(operation.equals("0")) {			
+			loginRegisterService.getEmail(JSONObject.fromObject(Email).getString("Email"));
+		}else if (operation.equals("1")){
+			loginRegisterService.getEmailWhereFindPassword(JSONObject.fromObject(Email).getString("Email"));
+		}
 	}
+	
 	@PostMapping(value="/register",produces = "application/json;charset=utf-8")
 	public void register(@RequestBody String userInfo) {
 		System.out.println(userInfo);
@@ -55,6 +58,11 @@ public class test {
 	public void login(@RequestBody String userInfo) {
 		System.out.println("login"+userInfo);
 		loginRegisterService.login(userInfo);
+	}
+	@PostMapping(value="/modifyPassword",produces = "application/json;charset=utf-8")
+	public void modifyPassword(@RequestBody String userInfo) {
+		System.out.println("login"+userInfo);
+		loginRegisterService.modifyPassword(userInfo);
 	}
 	
 	

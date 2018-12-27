@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import daka.enums.ResultEnum;
 import daka.exception.MyException;
-import daka.model.Result;
 import daka.utils.ResultUtil;
 import net.sf.json.JSONArray;
 

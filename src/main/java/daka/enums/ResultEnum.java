@@ -6,12 +6,12 @@ public enum ResultEnum {
 	MAIL_WRONG(1,"邮箱错误"),
 	REGISTER_WRONG_FOR_CODE(2,"注册失败，请检查验证码是否正确"),
 	REGISTER_WRONG_FOR_EXIST(3,"注册失败，该账户已存在"),
-	LOGIN_WRONG(4,"登录失败，请检查账户密码是否正确")
+	LOGIN_WRONG(4,"登录失败，请检查账户密码是否正确"),
+	GET_EMAIL_WRONG_FOR_NOT_EXIST(5,"找回密码失败，该邮箱不存在"),
+	MODIFY_PASSWORD_WRONG_FOR_CODE(6,"修改密码失败，请检查验证码是否正确")
 	;
 	private Integer code ;
 	private String msg;
-	
-	
 	ResultEnum(Integer code ,String msg){
 		this.code = code;
 		this.msg = msg;

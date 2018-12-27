@@ -29,10 +29,10 @@ public class LoginRegisterService {
 		System.out.println("register:" + userInfo);
 		JSONObject jsonobject = JSONObject.parseObject(userInfo);
 		User user = (User) JSONObject.parseObject(userInfo, User.class);
-		System.out.println(user);
+		System.out.println("register:"+user);
 		String code = queryCodeByEmail(user.getEmail());
 
-		// 判断是否已经存在账户
+		// 判断是否已经存在账户  发邮箱的时候已经判断了
 
 		// 判断验证码是否正确
 		if (code.equals(jsonobject.getString("code"))) {
@@ -53,13 +53,7 @@ public class LoginRegisterService {
 	 * @param Email
 	 */
 	public void getEmail(String Email) {
-		Session s = HibernateUtil.openSession();
-		Transaction tx = s.beginTransaction();
-		Query q = s.createQuery("from User where Email = ?");
-		q.setString(0, Email);
-		tx.commit();
-		List list = q.list();
-		System.out.println(list.size());
+		List list = findUserByEmail(Email);
 		// 判断是否已经存在账户
 		if (list.size() == 0) {
 			String verificationCode = GetVerificationCode.getCode();
@@ -71,6 +65,7 @@ public class LoginRegisterService {
 			Query q1 = s1.createQuery("from RegisterEmailVerificationCode where Email = ?");
 			q1.setString(0, Email);
 			List list1 = q1.list();
+			//判断是否之前发过验证码
 			if (list1.size() != 0) {
 				registerEmailVerificationCode = (RegisterEmailVerificationCode) list1.get(0);
 				registerEmailVerificationCode.setVerificationCode(verificationCode);
@@ -83,6 +78,49 @@ public class LoginRegisterService {
 			throw new MyException(ResultEnum.REGISTER_WRONG_FOR_EXIST);
 		}
 
+	}
+	private List findUserByEmail(String Email) {
+		Session s = HibernateUtil.openSession();
+		Transaction tx = s.beginTransaction();
+		Query q = s.createQuery("from User where Email = ?");
+		q.setString(0, Email);
+		tx.commit();
+		List list = q.list();
+		System.out.println(list.size());
+		return list;
+	}
+	//修改密码的时候发送验证码
+	public void getEmailWhereFindPassword(String Email) {
+		//判断是否有该用户进行过注册
+		List list = findUserByEmail(Email);
+		// 判断是否已经存在账户
+		System.out.println("getEmailWhereFindPassword "+list.size());
+		System.out.println("getEmailWhereFindPassword "+Email);
+		if (list.size() == 1) {
+			String verificationCode = GetVerificationCode.getCode();
+			RegisterEmailVerificationCode registerEmailVerificationCode = new RegisterEmailVerificationCode();
+			registerEmailVerificationCode.setEmail(Email);
+			registerEmailVerificationCode.setVerificationCode(verificationCode);
+			Session s1 = HibernateUtil.openSession();
+			Transaction tx1 = s1.beginTransaction();
+			Query q1 = s1.createQuery("from RegisterEmailVerificationCode where Email = ?");
+			q1.setString(0, Email);
+			List list1 = q1.list();
+			//判断之前是否发送过验证码
+			if (list1.size() != 0) {
+				registerEmailVerificationCode = (RegisterEmailVerificationCode) list1.get(0);
+				registerEmailVerificationCode.setVerificationCode(verificationCode);
+			} else {
+				s1.save(registerEmailVerificationCode);
+			}
+			tx1.commit();
+			SendMail.send(Email, "打卡系统找回密码邮箱验证", "尊敬的用户：您正在进行密码找回，验证码：" + verificationCode + "，请及时输入验证码。若非本人操作，请忽视此邮件。");
+		}else {
+			throw new MyException(ResultEnum.GET_EMAIL_WRONG_FOR_NOT_EXIST);
+		}
+		//有的话给他发邮件
+		//没有的话抛异常
+		
 	}
 
 	/**
@@ -127,5 +165,31 @@ public class LoginRegisterService {
 			throw new MyException(ResultEnum.SUCCESS, user);
 		}
 	}
+
+
+	public void modifyPassword(String userInfo) {
+		System.out.println("modifyPassword:" + userInfo);
+		JSONObject jsonobject = JSONObject.parseObject(userInfo);
+		User user = (User) JSONObject.parseObject(userInfo, User.class);
+		System.out.println("modifyPassword:"+user);
+		String code = queryCodeByEmail(user.getEmail());
+		// 判断是否已经存在账户  发邮箱的时候已经判断了
+		// 判断验证码是否正确
+		if (code.equals(jsonobject.getString("code"))) {
+			Session s1 = HibernateUtil.openSession();
+			Transaction tx1 = s1.beginTransaction();
+			Query q = s1.createQuery("from User where Email = ?");
+			q.setString(0, user.getEmail());
+			User user1 = (User) q.uniqueResult();
+			user1.setPassword(user.getPassword());
+			tx1.commit();
+			throw new MyException(ResultEnum.SUCCESS);
+		} else {
+			throw new MyException(ResultEnum.MODIFY_PASSWORD_WRONG_FOR_CODE);
+		}
+	}
+
+
+	
 
 }
