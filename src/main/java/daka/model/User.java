@@ -1,5 +1,6 @@
 package daka.model;
 
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,6 +10,7 @@ import javax.persistence.Table;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
 
 /**@version:
  * @Description: 
@@ -29,6 +31,32 @@ public class User {
 	private String Email;
 	@Column(name="password")
 	private String password;
+	@Column(name="age")
+	private String age;
+	@Column(name="phone")
+	private String phone;
+	@Column(name="nickname")
+	private String nickname;
+	
+	
+	public String getAge() {
+		return age;
+	}
+	public void setAge(String age) {
+		this.age = age;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+	public String getNickname() {
+		return nickname;
+	}
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
 	public String getEmail() {
 		return Email;
 	}
@@ -49,8 +77,10 @@ public class User {
 	}
 	@Override
 	public String toString() {
-		return "User [Id=" + Id + ", Email=" + Email + ", password=" + password + "]";
+		return "User [Id=" + Id + ", Email=" + Email + ", password=" + password + ", age=" + age + ", phone=" + phone
+				+ ", nickname=" + nickname + "]";
 	}
+	
 	
 	
 }

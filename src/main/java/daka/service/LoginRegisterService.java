@@ -31,9 +31,7 @@ public class LoginRegisterService {
 		User user = (User) JSONObject.parseObject(userInfo, User.class);
 		System.out.println("register:"+user);
 		String code = queryCodeByEmail(user.getEmail());
-
 		// 判断是否已经存在账户  发邮箱的时候已经判断了
-
 		// 判断验证码是否正确
 		if (code.equals(jsonobject.getString("code"))) {
 			Session s1 = HibernateUtil.openSession();
@@ -45,8 +43,6 @@ public class LoginRegisterService {
 			throw new MyException(ResultEnum.REGISTER_WRONG_FOR_CODE);
 		}
 	}
-
-
 	/**
 	 * 根据邮箱发邮件
 	 * 
@@ -120,9 +116,7 @@ public class LoginRegisterService {
 		}
 		//有的话给他发邮件
 		//没有的话抛异常
-		
 	}
-
 	/**
 	 * 注册的时候需要根据用户输入的邮箱查询是否是对应的验证码存在
 	 * 
@@ -151,7 +145,6 @@ public class LoginRegisterService {
 		System.out.println("login-serive:" + userInfo);
 		User user = (User) JSONObject.parseObject(userInfo, User.class);
 		System.out.println(user);
-
 		Session s = HibernateUtil.openSession();
 		Transaction tx = s.beginTransaction();
 		Query q = s.createQuery("from User where Email = ? and password = ?");
@@ -165,8 +158,6 @@ public class LoginRegisterService {
 			throw new MyException(ResultEnum.SUCCESS, user);
 		}
 	}
-
-
 	public void modifyPassword(String userInfo) {
 		System.out.println("modifyPassword:" + userInfo);
 		JSONObject jsonobject = JSONObject.parseObject(userInfo);
@@ -188,8 +179,4 @@ public class LoginRegisterService {
 			throw new MyException(ResultEnum.MODIFY_PASSWORD_WRONG_FOR_CODE);
 		}
 	}
-
-
-	
-
 }
