@@ -37,8 +37,16 @@ public class User {
 	private String phone;
 	@Column(name="nickname")
 	private String nickname;
+	@Column(name="gender")
+	private String gender;
 	
 	
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
 	public String getAge() {
 		return age;
 	}
@@ -78,8 +86,9 @@ public class User {
 	@Override
 	public String toString() {
 		return "User [Id=" + Id + ", Email=" + Email + ", password=" + password + ", age=" + age + ", phone=" + phone
-				+ ", nickname=" + nickname + "]";
+				+ ", nickname=" + nickname + ", gender=" + gender + "]";
 	}
+	
 	
 	
 	

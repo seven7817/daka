@@ -93,6 +93,7 @@ public class LoginRegisterService {
 		System.out.println("getEmailWhereFindPassword "+list.size());
 		System.out.println("getEmailWhereFindPassword "+Email);
 		if (list.size() == 1) {
+			//获取验证码
 			String verificationCode = GetVerificationCode.getCode();
 			RegisterEmailVerificationCode registerEmailVerificationCode = new RegisterEmailVerificationCode();
 			registerEmailVerificationCode.setEmail(Email);
@@ -116,6 +117,22 @@ public class LoginRegisterService {
 		}
 		//有的话给他发邮件
 		//没有的话抛异常
+	}
+	public void getEmailWhereModifyPassword(String Email) {
+		// TODO Auto-generated method stub
+		String verificationCode = GetVerificationCode.getCode();
+		RegisterEmailVerificationCode registerEmailVerificationCode = new RegisterEmailVerificationCode();
+		registerEmailVerificationCode.setEmail(Email);
+		registerEmailVerificationCode.setVerificationCode(verificationCode);
+		Session s = HibernateUtil.openSession();
+		Transaction tx = s.beginTransaction();
+		Query q = s.createQuery("from RegisterEmailVerificationCode where Email = ?");
+		q.setString(0, Email);
+		registerEmailVerificationCode = (RegisterEmailVerificationCode)q.uniqueResult();
+		registerEmailVerificationCode.setVerificationCode(verificationCode);
+		s.save(registerEmailVerificationCode);
+		tx.commit();
+		SendMail.send(Email, "打卡系统修改密码邮箱验证", "尊敬的用户：您正在进行修改密码，验证码：" + verificationCode + "，请及时输入验证码。若非本人操作，请忽视此邮件。");
 	}
 	/**
 	 * 注册的时候需要根据用户输入的邮箱查询是否是对应的验证码存在
@@ -179,4 +196,35 @@ public class LoginRegisterService {
 			throw new MyException(ResultEnum.MODIFY_PASSWORD_WRONG_FOR_CODE);
 		}
 	}
+	public void getBaseInfo(String Email) {
+		JSONObject jsonobject = JSONObject.parseObject(Email);
+		String EmailInfo = jsonobject.getString("Email");
+		System.out.println("getBaseInfo "+ EmailInfo);
+		Session s = HibernateUtil.openSession();
+		Transaction tx = s.beginTransaction();
+		Query q = s.createQuery("from User where Email = ?");
+		q.setString(0, EmailInfo);
+		User user = (User) q.uniqueResult();
+		tx.commit();
+		throw new MyException(ResultEnum.SUCCESS,user);
+	}
+	public void saveBaseInfo(String userInfo) {
+		// TODO Auto-generated method stub
+		System.out.println("saveBaseInfo:" + userInfo);
+		JSONObject jsonobject = JSONObject.parseObject(userInfo);
+		User newUser = (User) JSONObject.parseObject(userInfo, User.class);
+		
+		Session s = HibernateUtil.openSession();
+		Transaction tx = s.beginTransaction();
+		Query q = s.createQuery("from User where Email = ?");
+		q.setString(0, newUser.getEmail());
+		User user = (User) q.uniqueResult();
+		user.setAge(newUser.getAge());
+		user.setGender(newUser.getGender());
+		user.setNickname(newUser.getNickname());
+		user.setPhone(newUser.getPhone());
+		tx.commit();
+		throw new MyException(ResultEnum.SUCCESS);
+	}
+	
 }
