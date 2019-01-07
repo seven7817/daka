@@ -57,12 +57,12 @@ public class test {
 	}
 	@PostMapping(value="/login",produces = "application/json;charset=utf-8")
 	public void login(@RequestBody String userInfo) {
-		System.out.println("login"+userInfo);
+//		System.out.println("login"+userInfo);
 		loginRegisterService.login(userInfo);
 	}
 	@PostMapping(value="/modifyPassword",produces = "application/json;charset=utf-8")
 	public void modifyPassword(@RequestBody String userInfo) {
-		System.out.println("login"+userInfo);
+		System.out.println("modifyPassword"+userInfo);
 		loginRegisterService.modifyPassword(userInfo);
 	}
 	/**
@@ -71,7 +71,7 @@ public class test {
 	 */
 	@PostMapping(value="/getBaseInfo",produces = "application/json;charset=utf-8")
 	public void getBaseInfo(@RequestBody String Email) {
-		System.out.println("getBaseInfo"+Email);
+//		System.out.println("getBaseInfo"+Email);
 		loginRegisterService.getBaseInfo(Email);
 	}
 	/**

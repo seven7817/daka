@@ -1,5 +1,6 @@
 package daka.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -8,7 +9,6 @@ import org.hibernate.Transaction;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.sun.activation.registries.MailcapParseException;
 
 import daka.enums.ResultEnum;
 import daka.exception.MyException;
@@ -26,15 +26,15 @@ public class LoginRegisterService {
 	 * @param userInfo
 	 */
 	public void register(String userInfo) {
-		System.out.println("register:" + userInfo);
+//		System.out.println("register:" + userInfo);
 		JSONObject jsonobject = JSONObject.parseObject(userInfo);
 		User user = (User) JSONObject.parseObject(userInfo, User.class);
-		System.out.println("register:"+user);
+//		System.out.println("register:"+user);
 		String code = queryCodeByEmail(user.getEmail());
 		// 判断是否已经存在账户  发邮箱的时候已经判断了
 		// 判断验证码是否正确
 		if (code.equals(jsonobject.getString("code"))) {
-			Session s1 = HibernateUtil.openSession();
+			Session s1 = HibernateUtil.getCurrentSession();
 			Transaction tx1 = s1.beginTransaction();
 			s1.save(user);
 			tx1.commit();
@@ -49,22 +49,26 @@ public class LoginRegisterService {
 	 * @param Email
 	 */
 	public void getEmail(String Email) {
+		@SuppressWarnings("rawtypes")
 		List list = findUserByEmail(Email);
 		// 判断是否已经存在账户
 		if (list.size() == 0) {
 			String verificationCode = GetVerificationCode.getCode();
-			Session s1 = HibernateUtil.openSession();
-			Transaction tx1 = s1.beginTransaction();
 			RegisterEmailVerificationCode registerEmailVerificationCode = new RegisterEmailVerificationCode();
+			Session s1 = HibernateUtil.getCurrentSession();
+			Transaction tx1 = s1.beginTransaction();
 			registerEmailVerificationCode.setEmail(Email);
 			registerEmailVerificationCode.setVerificationCode(verificationCode);
+			registerEmailVerificationCode.setLastDate(new Date());
 			Query q1 = s1.createQuery("from RegisterEmailVerificationCode where Email = ?");
 			q1.setString(0, Email);
+			@SuppressWarnings("rawtypes")
 			List list1 = q1.list();
 			//判断是否之前发过验证码
 			if (list1.size() != 0) {
 				registerEmailVerificationCode = (RegisterEmailVerificationCode) list1.get(0);
 				registerEmailVerificationCode.setVerificationCode(verificationCode);
+				registerEmailVerificationCode.setLastDate(new Date());
 			} else {
 				s1.save(registerEmailVerificationCode);
 			}
@@ -75,8 +79,9 @@ public class LoginRegisterService {
 		}
 
 	}
+	@SuppressWarnings("rawtypes")
 	private List findUserByEmail(String Email) {
-		Session s = HibernateUtil.openSession();
+		Session s = HibernateUtil.getCurrentSession();
 		Transaction tx = s.beginTransaction();
 		Query q = s.createQuery("from User where Email = ?");
 		q.setString(0, Email);
@@ -88,6 +93,7 @@ public class LoginRegisterService {
 	//修改密码的时候发送验证码
 	public void getEmailWhereFindPassword(String Email) {
 		//判断是否有该用户进行过注册
+		@SuppressWarnings("rawtypes")
 		List list = findUserByEmail(Email);
 		// 判断是否已经存在账户
 		System.out.println("getEmailWhereFindPassword "+list.size());
@@ -98,15 +104,18 @@ public class LoginRegisterService {
 			RegisterEmailVerificationCode registerEmailVerificationCode = new RegisterEmailVerificationCode();
 			registerEmailVerificationCode.setEmail(Email);
 			registerEmailVerificationCode.setVerificationCode(verificationCode);
-			Session s1 = HibernateUtil.openSession();
+			registerEmailVerificationCode.setLastDate(new Date());
+			Session s1 = HibernateUtil.getCurrentSession();
 			Transaction tx1 = s1.beginTransaction();
 			Query q1 = s1.createQuery("from RegisterEmailVerificationCode where Email = ?");
 			q1.setString(0, Email);
+			@SuppressWarnings("rawtypes")
 			List list1 = q1.list();
 			//判断之前是否发送过验证码
 			if (list1.size() != 0) {
 				registerEmailVerificationCode = (RegisterEmailVerificationCode) list1.get(0);
 				registerEmailVerificationCode.setVerificationCode(verificationCode);
+				registerEmailVerificationCode.setLastDate(new Date());
 			} else {
 				s1.save(registerEmailVerificationCode);
 			}
@@ -122,14 +131,15 @@ public class LoginRegisterService {
 		// TODO Auto-generated method stub
 		String verificationCode = GetVerificationCode.getCode();
 		RegisterEmailVerificationCode registerEmailVerificationCode = new RegisterEmailVerificationCode();
-		registerEmailVerificationCode.setEmail(Email);
-		registerEmailVerificationCode.setVerificationCode(verificationCode);
-		Session s = HibernateUtil.openSession();
+//		registerEmailVerificationCode.setEmail(Email);
+//		registerEmailVerificationCode.setVerificationCode(verificationCode);
+		Session s = HibernateUtil.getCurrentSession();
 		Transaction tx = s.beginTransaction();
 		Query q = s.createQuery("from RegisterEmailVerificationCode where Email = ?");
 		q.setString(0, Email);
 		registerEmailVerificationCode = (RegisterEmailVerificationCode)q.uniqueResult();
 		registerEmailVerificationCode.setVerificationCode(verificationCode);
+		registerEmailVerificationCode.setLastDate(new Date());
 		s.save(registerEmailVerificationCode);
 		tx.commit();
 		SendMail.send(Email, "打卡系统修改密码邮箱验证", "尊敬的用户：您正在进行修改密码，验证码：" + verificationCode + "，请及时输入验证码。若非本人操作，请忽视此邮件。");
@@ -147,10 +157,16 @@ public class LoginRegisterService {
 		Query q = s.createQuery("from RegisterEmailVerificationCode where Email = ?");
 		q.setString(0, Email);
 		// 1.执行获取结果集
+		@SuppressWarnings("rawtypes")
 		List list = q.list();
 		RegisterEmailVerificationCode registerEmailVerificationCode = null;
 		if (list.size() != 0) {
 			registerEmailVerificationCode = (RegisterEmailVerificationCode) list.get(0);
+			//判断验证码是否失效
+			if(new Date().getTime() - registerEmailVerificationCode.getLastDate().getTime()>1000*60*4) {
+//				System.out.println(new Date().getTime() - registerEmailVerificationCode.getLastDate().getTime());
+				throw new MyException(ResultEnum.CODE_INVALID);
+			}
 		}
 		System.out.println("queryCodeByEmail" + registerEmailVerificationCode.getVerificationCode());
 
@@ -161,17 +177,18 @@ public class LoginRegisterService {
 	public void login(String userInfo) {
 		System.out.println("login-serive:" + userInfo);
 		User user = (User) JSONObject.parseObject(userInfo, User.class);
-		System.out.println(user);
-		Session s = HibernateUtil.openSession();
+//		System.out.println(user);
+		Session s = HibernateUtil.getCurrentSession();
 		Transaction tx = s.beginTransaction();
 		Query q = s.createQuery("from User where Email = ? and password = ?");
 		q.setString(0, user.getEmail());
 		q.setString(1, user.getPassword());
-		tx.commit();
 		if (q.uniqueResult() == null) {
+			tx.commit();
 			throw new MyException(ResultEnum.LOGIN_WRONG);
 		} else {
 			user.setPassword("baomi");
+			tx.commit();
 			throw new MyException(ResultEnum.SUCCESS, user);
 		}
 	}
@@ -184,11 +201,15 @@ public class LoginRegisterService {
 		// 判断是否已经存在账户  发邮箱的时候已经判断了
 		// 判断验证码是否正确
 		if (code.equals(jsonobject.getString("code"))) {
-			Session s1 = HibernateUtil.openSession();
+			Session s1 = HibernateUtil.getCurrentSession();
 			Transaction tx1 = s1.beginTransaction();
 			Query q = s1.createQuery("from User where Email = ?");
 			q.setString(0, user.getEmail());
 			User user1 = (User) q.uniqueResult();
+			//判断新密码和旧密码是否一样
+			if(user.getPassword().equals(user1.getPassword())) {
+				throw new MyException(ResultEnum.PASSWORD_REPETITION);
+			}
 			user1.setPassword(user.getPassword());
 			tx1.commit();
 			throw new MyException(ResultEnum.SUCCESS);
@@ -200,21 +221,22 @@ public class LoginRegisterService {
 		JSONObject jsonobject = JSONObject.parseObject(Email);
 		String EmailInfo = jsonobject.getString("Email");
 		System.out.println("getBaseInfo "+ EmailInfo);
-		Session s = HibernateUtil.openSession();
+		Session s = HibernateUtil.getCurrentSession();
 		Transaction tx = s.beginTransaction();
 		Query q = s.createQuery("from User where Email = ?");
 		q.setString(0, EmailInfo);
 		User user = (User) q.uniqueResult();
 		tx.commit();
+		System.out.println("3213123213123");
 		throw new MyException(ResultEnum.SUCCESS,user);
 	}
 	public void saveBaseInfo(String userInfo) {
 		// TODO Auto-generated method stub
 		System.out.println("saveBaseInfo:" + userInfo);
-		JSONObject jsonobject = JSONObject.parseObject(userInfo);
+//		JSONObject jsonobject = JSONObject.parseObject(userInfo);
 		User newUser = (User) JSONObject.parseObject(userInfo, User.class);
 		
-		Session s = HibernateUtil.openSession();
+		Session s = HibernateUtil.getCurrentSession();
 		Transaction tx = s.beginTransaction();
 		Query q = s.createQuery("from User where Email = ?");
 		q.setString(0, newUser.getEmail());
@@ -226,5 +248,4 @@ public class LoginRegisterService {
 		tx.commit();
 		throw new MyException(ResultEnum.SUCCESS);
 	}
-	
 }

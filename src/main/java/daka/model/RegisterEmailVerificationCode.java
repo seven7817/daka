@@ -1,5 +1,7 @@
 package daka.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,7 +30,16 @@ public class RegisterEmailVerificationCode {
 	@Column(name="email") 
 	private String Email;
 	@Column(name="verification_code") 
-	private String verificationCode;	
+	private String verificationCode;
+	@Column(name="last_date")
+	private Date lastDate;	
+	
+	public Date getLastDate() {
+		return lastDate;
+	}
+	public void setLastDate(Date lastDate) {
+		this.lastDate = lastDate;
+	}
 	public Integer getId() {
 		return Id;
 	}
@@ -47,4 +58,10 @@ public class RegisterEmailVerificationCode {
 	public void setVerificationCode(String verificationCode) {
 		this.verificationCode = verificationCode;
 	}
+	@Override
+	public String toString() {
+		return "RegisterEmailVerificationCode [Id=" + Id + ", Email=" + Email + ", verificationCode=" + verificationCode
+				+ ", lastDate=" + lastDate + "]";
+	}
+	
 }
