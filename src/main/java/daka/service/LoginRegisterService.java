@@ -17,6 +17,7 @@ import daka.model.User;
 import daka.utils.GetVerificationCode;
 import daka.utils.HibernateUtil;
 import daka.utils.SendMail;
+import daka.utils.SendMail2;
 
 @Service
 public class LoginRegisterService {
@@ -73,7 +74,8 @@ public class LoginRegisterService {
 				s1.save(registerEmailVerificationCode);
 			}
 			tx1.commit();
-			SendMail.send(Email, "打卡系统注册邮箱验证", "尊敬的用户：您正在进行账户注册，验证码：" + verificationCode + "，请及时输入验证码。若非本人操作，请忽视此邮件。");
+//			SendMail.send(Email, "打卡系统注册邮箱验证", "尊敬的用户：您正在进行账户注册，验证码：" + verificationCode + "，请及时输入验证码。若非本人操作，请忽视此邮件。");
+			SendMail2.send(Email, "打卡系统注册邮箱验证", "尊敬的用户：您正在进行账户注册，验证码：" + verificationCode + "，请及时输入验证码。若非本人操作，请忽视此邮件。");
 		}else {
 			throw new MyException(ResultEnum.REGISTER_WRONG_FOR_EXIST);
 		}
@@ -85,8 +87,8 @@ public class LoginRegisterService {
 		Transaction tx = s.beginTransaction();
 		Query q = s.createQuery("from User where Email = ?");
 		q.setString(0, Email);
-		tx.commit();
 		List list = q.list();
+		tx.commit();
 		System.out.println(list.size());
 		return list;
 	}
@@ -120,7 +122,7 @@ public class LoginRegisterService {
 				s1.save(registerEmailVerificationCode);
 			}
 			tx1.commit();
-			SendMail.send(Email, "打卡系统找回密码邮箱验证", "尊敬的用户：您正在进行密码找回，验证码：" + verificationCode + "，请及时输入验证码。若非本人操作，请忽视此邮件。");
+			SendMail2.send(Email, "打卡系统找回密码邮箱验证", "尊敬的用户：您正在进行密码找回，验证码：" + verificationCode + "，请及时输入验证码。若非本人操作，请忽视此邮件。");
 		}else {
 			throw new MyException(ResultEnum.GET_EMAIL_WRONG_FOR_NOT_EXIST);
 		}
@@ -142,7 +144,7 @@ public class LoginRegisterService {
 		registerEmailVerificationCode.setLastDate(new Date());
 		s.save(registerEmailVerificationCode);
 		tx.commit();
-		SendMail.send(Email, "打卡系统修改密码邮箱验证", "尊敬的用户：您正在进行修改密码，验证码：" + verificationCode + "，请及时输入验证码。若非本人操作，请忽视此邮件。");
+		SendMail2.send(Email, "打卡系统修改密码邮箱验证", "尊敬的用户：您正在进行修改密码，验证码：" + verificationCode + "，请及时输入验证码。若非本人操作，请忽视此邮件。");
 	}
 	/**
 	 * 注册的时候需要根据用户输入的邮箱查询是否是对应的验证码存在
@@ -248,4 +250,33 @@ public class LoginRegisterService {
 		tx.commit();
 		throw new MyException(ResultEnum.SUCCESS);
 	}
+	public void recharge(String Email) {
+		Session s = HibernateUtil.getCurrentSession();
+		Transaction tx = s.beginTransaction();
+		Query q = s.createQuery("from User where Email = ?");
+		q.setString(0, Email);
+		User user = (User) q.uniqueResult();
+		user.setIsRecharge("1");
+		tx.commit();
+		throw new MyException(ResultEnum.SUCCESS);
+	}
+	public void isRecharge(String Email) {
+		// TODO Auto-generated method stub
+		JSONObject jsonobject = JSONObject.parseObject(Email);
+		String EmailInfo = jsonobject.getString("Email");
+		Session s = HibernateUtil.getCurrentSession();
+		Transaction tx = s.beginTransaction();
+		Query q = s.createQuery("from User where Email = ?");
+		q.setString(0, EmailInfo);
+		User user = (User) q.uniqueResult();
+//		System.out.println("user:"+user);
+		if(user.getIsRecharge().equals("1")) {
+			throw new MyException(ResultEnum.SUCCESS);
+		}
+		else {
+			throw new MyException(ResultEnum.NOT_RECHARGE);
+		}
+	}
+	
+	
 }

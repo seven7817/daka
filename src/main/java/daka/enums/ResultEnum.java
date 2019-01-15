@@ -11,6 +11,7 @@ public enum ResultEnum {
 	MODIFY_PASSWORD_WRONG_FOR_CODE(6,"修改密码失败，请检查验证码是否正确"),
 	CODE_INVALID(7,"验证码以失效，请重新发送验证码"),
 	PASSWORD_REPETITION(8,"不能改与旧密码一样的密码"),
+	NOT_RECHARGE(9,"您还没有充值"),
 	;
 	private Integer code ;
 	private String msg;

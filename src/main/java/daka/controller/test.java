@@ -7,9 +7,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-
+import org.springframework.web.servlet.ModelAndView;
 
 import daka.model.User;
 import daka.service.LoginRegisterService;
@@ -35,7 +35,17 @@ public class test {
 		user.setEmail("孙政");
 		user.setPassword("123");
 		JSONArray json = JSONArray.fromObject(user);
+		
 		return json.toString();
+	}
+	@GetMapping(value="/index",produces = "application/json;charset=utf-8")
+	public ModelAndView test2(@RequestParam("Email") String Email) {
+		System.out.println("aaaa");
+		System.out.println(Email);
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("index");
+		modelAndView.addObject("Email",Email);
+		return modelAndView;
 	}
 	@PostMapping(value="/getEmail",produces = "application/json;charset=utf-8")
 	public void getEmail(@RequestBody String Email) {
@@ -83,4 +93,16 @@ public class test {
 		System.out.println("saveBaseInfo"+userInfo);
 		loginRegisterService.saveBaseInfo(userInfo);
 	}
+	@PostMapping(value="/recharge",produces = "application/json;charset=utf-8")
+	public void recharge(String Email) {
+		System.out.println("充值成功,要充值的账户是:"+Email);
+		loginRegisterService.recharge(Email);
+	}
+	@PostMapping(value="/isRecharge",produces = "application/json;charset=utf-8")
+	public void isRecharge(@RequestBody String Email) {
+		System.out.println("isRecharge"+Email);
+		loginRegisterService.isRecharge(Email);
+	}
+	
+	
 }

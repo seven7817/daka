@@ -39,8 +39,15 @@ public class User {
 	private String nickname;
 	@Column(name="gender")
 	private String gender;
+	@Column(name="isRecharge")
+	private String isRecharge="0";
 	
-	
+	public String getIsRecharge() {
+		return isRecharge;
+	}
+	public void setIsRecharge(String isRecharge) {
+		this.isRecharge = isRecharge;
+	}
 	public String getGender() {
 		return gender;
 	}
@@ -86,10 +93,6 @@ public class User {
 	@Override
 	public String toString() {
 		return "User [Id=" + Id + ", Email=" + Email + ", password=" + password + ", age=" + age + ", phone=" + phone
-				+ ", nickname=" + nickname + ", gender=" + gender + "]";
+				+ ", nickname=" + nickname + ", gender=" + gender + ", isRecharge=" + isRecharge + "]";
 	}
-	
-	
-	
-	
 }
