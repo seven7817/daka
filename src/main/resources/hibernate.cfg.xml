@@ -36,7 +36,8 @@
 		<!-- 第三部分：映射配置文件的位置 -->
 		<mapping class = "daka.model.User"></mapping>
 		<mapping class = "daka.model.RegisterEmailVerificationCode"></mapping>
-						  
+		<mapping class = "daka.model.Order"></mapping>
+		<mapping class = "daka.model.Daka"></mapping>
 	</session-factory>
 </hibernate-configuration>
 

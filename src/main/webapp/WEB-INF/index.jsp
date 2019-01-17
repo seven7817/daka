@@ -4,14 +4,24 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<%
+	request.setCharacterEncoding("utf-8");
+	response.setCharacterEncoding("utf-8");
+%>
 <title>Insert title here</title>
 </head>
 <body>
-	执行成功！http://47.101.212.238:8080/daka/ 
-	<% String Email = (String)request.getAttribute("Email"); %>
+	<%
+		String Email = (String) request.getAttribute("Email");
+		String money = (String) request.getAttribute("money");
+		String description = (String) request.getAttribute("description");
+	%>
+	执行成功！邮箱是：<%=Email%>，金额是：<%=money%>，描述是：<%=description%>
 	<form action="recharge" method="post">
-		<input type="hidden" name="Email" value= <%= Email %>> 
-		<input type="submit" value="点击进行充值">
+		<input type="hidden" name="Email" value=<%=Email%>> <input
+			type="hidden" name="money" value=<%=money%>> <input
+			type="hidden" name="description" value=<%=description%>> <input
+			type="submit" value="点击进行充值">
 	</form>
 </body>
 </html>

@@ -39,14 +39,25 @@ public class test {
 		return json.toString();
 	}
 	@GetMapping(value="/index",produces = "application/json;charset=utf-8")
-	public ModelAndView test2(@RequestParam("Email") String Email) {
+	public ModelAndView test2(@RequestParam("Email") String Email,@RequestParam("money") String money,
+			@RequestParam("description") String description) {
 		System.out.println("aaaa");
 		System.out.println(Email);
+		System.out.println(money);
+		System.out.println(description);
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("index");
 		modelAndView.addObject("Email",Email);
+		modelAndView.addObject("money",money);
+		modelAndView.addObject("description",description);
 		return modelAndView;
 	}
+	@GetMapping(value="/coding",produces = "application/json;charset=utf-8")
+	public String test3() {
+		
+		return "coding";
+	}
+	
 	@PostMapping(value="/getEmail",produces = "application/json;charset=utf-8")
 	public void getEmail(@RequestBody String Email) {
 		System.out.println(Email+"controller里面的getEmail");	
@@ -93,15 +104,23 @@ public class test {
 		System.out.println("saveBaseInfo"+userInfo);
 		loginRegisterService.saveBaseInfo(userInfo);
 	}
+	//手机充值调用的方法
 	@PostMapping(value="/recharge",produces = "application/json;charset=utf-8")
-	public void recharge(String Email) {
-		System.out.println("充值成功,要充值的账户是:"+Email);
-		loginRegisterService.recharge(Email);
+	public void recharge(String Email,String money,String description) {
+		System.out.println("充值成功,要充值的账户是:"+Email+"金额是："+money+"描述是："+description);
+		loginRegisterService.recharge(Email, money, description);
 	}
+	//出现验证码的时候轮询访问判断是否扫码
 	@PostMapping(value="/isRecharge",produces = "application/json;charset=utf-8")
 	public void isRecharge(@RequestBody String Email) {
 		System.out.println("isRecharge"+Email);
 		loginRegisterService.isRecharge(Email);
+	}
+	//如果前端判断已经支付了后，就保存用户的申请信息
+	@PostMapping(value="/saveDakaInfo",produces = "application/json;charset=utf-8")
+	public void saveDakaInfo(@RequestBody String dakaInfo) {
+		System.out.println("saveDakaInfo"+dakaInfo);
+		loginRegisterService.saveDakaInfo(dakaInfo);
 	}
 	
 	

@@ -34,6 +34,7 @@ public class RegisterEmailVerificationCode {
 	@Column(name="last_date")
 	private Date lastDate;	
 	
+	
 	public Date getLastDate() {
 		return lastDate;
 	}

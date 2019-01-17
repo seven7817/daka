@@ -3,6 +3,7 @@ package daka.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Properties;
  
 import javax.mail.Message.RecipientType;
@@ -44,8 +45,15 @@ public class SendMail2 {
 			MimeMessage message = new MimeMessage(session);
 			// 设置发件人
 
-//			InternetAddress from = new InternetAddress(props.getProperty("mail.user"));
-			InternetAddress from = new InternetAddress(props.getProperty("打卡系统"));
+			String nick="";   
+			try {  
+				nick=javax.mail.internet.MimeUtility.encodeText("打卡系统");  
+			} catch (UnsupportedEncodingException e) {  
+				e.printStackTrace();  
+			}   
+			InternetAddress from = new InternetAddress(nick+" <"+props.getProperty("mail.user")+">");
+
+			
 			message.setFrom(from);
 
 			// 设置收件人的邮箱
@@ -54,7 +62,7 @@ public class SendMail2 {
 
 			// 设置邮件标题
 			message.setSubject(mailSubject);
-
+		
 			// 设置邮件的内容体
 			message.setContent(content, "text/html;charset=UTF-8");
 
