@@ -38,7 +38,7 @@ public class User {
 	@Column(name="nickname")
 	private String nickname;
 	@Column(name="gender")
-	private String gender;
+	private String gender="2";
 	@Column(name="isRecharge")
 	private String isRecharge="0";
 	

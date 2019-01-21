@@ -13,6 +13,7 @@ public enum ResultEnum {
 	PASSWORD_REPETITION(8,"不能改与旧密码一样的密码"),
 	NOT_RECHARGE(9,"您还没有充值"),
 	Date_FORMAT_WRONG(10,"日期转换错误"),
+	SUCCESS_BUT_NO_INFO(11,"查询不到相关数据"),
 	;
 	private Integer code ;
 	private String msg;

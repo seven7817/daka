@@ -122,6 +122,12 @@ public class test {
 		System.out.println("saveDakaInfo"+dakaInfo);
 		loginRegisterService.saveDakaInfo(dakaInfo);
 	}
+	//用户想查看自己正在进行的所有打卡任务的时候，调用该方法
+	@PostMapping(value="/getFinishing",produces = "application/json;charset=utf-8")
+	public void getFinishing(@RequestBody String Email) {
+		System.out.println("getFinishing"+Email);
+		loginRegisterService.getFinishing(Email);
+	}
 	
 	
 }

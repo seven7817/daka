@@ -271,10 +271,6 @@ public class LoginRegisterService {
 		q.setString(0, Email);
 		User user = (User) q.uniqueResult();
 		user.setIsRecharge("1");
-//		tx.commit();
-
-//		Session s1 = HibernateUtil.getCurrentSession();
-//		Transaction tx1 = s1.beginTransaction();
 		// 记录付款的订单
 		Order order = new Order();
 		order.setOrderDate(new Date());
@@ -284,7 +280,6 @@ public class LoginRegisterService {
 		order.setMoney(money);
 		s.save(order);
 		tx.commit();
-
 		throw new MyException(ResultEnum.SUCCESS);
 	}
 
@@ -309,9 +304,7 @@ public class LoginRegisterService {
 			tx.commit();
 			throw new MyException(ResultEnum.NOT_RECHARGE);
 		}
-
 	}
-
 	public void saveDakaInfo(String dakaInfo) {
 		JSONObject jsonDaka = JSONObject.parseObject(dakaInfo);
 		System.out.println("接受到的打卡信息是" + jsonDaka);
@@ -328,8 +321,24 @@ public class LoginRegisterService {
 		Transaction tx = s.beginTransaction();
 		s.save(daka);
 		tx.commit();
-
 		throw new MyException(ResultEnum.SUCCESS);
 	}
-
+	public void getFinishing(String email) {
+		// TODO Auto-generated method stub
+		JSONObject jsonEmail = JSONObject.parseObject(email);
+		String Email = jsonEmail.getString("Email");
+		Session s = HibernateUtil.getCurrentSession();
+		Transaction tx = s.beginTransaction();
+		Query q = s.createQuery("from Daka where Email = ?");
+		q.setString(0, Email);
+		@SuppressWarnings({ "unchecked"})
+		List<Daka> dakaList = q.list();
+		tx.commit();
+		if(dakaList.size()!=0){
+			throw new MyException(ResultEnum.SUCCESS, dakaList);
+		}
+		else {
+			throw new MyException(ResultEnum.SUCCESS_BUT_NO_INFO);
+		}
+	}
 }
