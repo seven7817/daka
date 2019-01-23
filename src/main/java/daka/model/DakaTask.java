@@ -39,6 +39,15 @@ public class DakaTask {
 	private String img4;
 	@Column(name = "img5") 
 	private String img5;
+	@Column(name = "is_passed") 
+	private String isPassed="0";  //是否通过，0表示待审核，1表示通过，2表示未通过
+	
+	public String getIsPassed() {
+		return isPassed;
+	}
+	public void setIsPassed(String isPassed) {
+		this.isPassed = isPassed;
+	}
 	public Integer getId() {
 		return id;
 	}
@@ -103,11 +112,6 @@ public class DakaTask {
 	public String toString() {
 		return "DakaTask [id=" + id + ", dakaId=" + dakaId + ", response=" + response + ", commitDate=" + commitDate
 				+ ", summary=" + summary + ", img1=" + img1 + ", img2=" + img2 + ", img3=" + img3 + ", img4=" + img4
-				+ ", img5=" + img5 + "]";
+				+ ", img5=" + img5 + ", isPassed=" + isPassed + "]";
 	}
-	
-	
-	
-	
-	
 }
