@@ -38,6 +38,7 @@
 		<mapping class = "daka.model.RegisterEmailVerificationCode"></mapping>
 		<mapping class = "daka.model.Order"></mapping>
 		<mapping class = "daka.model.Daka"></mapping>
+		<mapping class = "daka.model.DakaTask"></mapping>
 	</session-factory>
 </hibernate-configuration>
 

@@ -128,6 +128,12 @@ public class test {
 		System.out.println("getFinishing"+Email);
 		loginRegisterService.getFinishing(Email);
 	}
+	//通过打卡的id和要显示的年月得到具体的详细打卡任务的状态，就是一个数组，可以用来显示在日历了
+	@PostMapping(value="/getDakaTasksStateByDakaIdAndDate",produces = "application/json;charset=utf-8")
+	public void getDakaTasksStateByDakaIdAndDate(@RequestBody String info) {
+		System.out.println("getDakaTasksStateByDakaIdAndDate"+info);
+		loginRegisterService.getDakaTasksStateByDakaIdAndDate(info);
+	}
 	
 	
 }

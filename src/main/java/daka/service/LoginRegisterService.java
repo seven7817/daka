@@ -1,8 +1,12 @@
 package daka.service;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -15,6 +19,7 @@ import com.alibaba.fastjson.JSONObject;
 import daka.enums.ResultEnum;
 import daka.exception.MyException;
 import daka.model.Daka;
+import daka.model.DakaTask;
 import daka.model.Order;
 import daka.model.RegisterEmailVerificationCode;
 import daka.model.User;
@@ -323,22 +328,54 @@ public class LoginRegisterService {
 		tx.commit();
 		throw new MyException(ResultEnum.SUCCESS);
 	}
+	@SuppressWarnings("null")
 	public void getFinishing(String email) {
 		// TODO Auto-generated method stub
 		JSONObject jsonEmail = JSONObject.parseObject(email);
 		String Email = jsonEmail.getString("Email");
 		Session s = HibernateUtil.getCurrentSession();
 		Transaction tx = s.beginTransaction();
-		Query q = s.createQuery("from Daka where Email = ?");
+		Query q = s.createQuery("from Daka where Email = ? ");
 		q.setString(0, Email);
 		@SuppressWarnings({ "unchecked"})
 		List<Daka> dakaList = q.list();
+		List<Daka> dakaList1 = new ArrayList<Daka>();
+		//判断打卡是否已经结束了
+		for(Daka daka :dakaList) {
+			Date now = new Date();
+//			System.out.println("now:"+now.getTime());
+//			System.out.println("daka:"+daka.getStartDate().getTime());
+			if(now.getTime()-daka.getStartDate().getTime() < 1000*60*60 *Integer.parseInt(daka.getTimeInterval())  * Integer.parseInt(daka.getTimes())) {
+				dakaList1.add(daka);
+			}
+		}
 		tx.commit();
-		if(dakaList.size()!=0){
-			throw new MyException(ResultEnum.SUCCESS, dakaList);
+		if(dakaList1.size()!=0){
+			throw new MyException(ResultEnum.SUCCESS, dakaList1);
 		}
 		else {
 			throw new MyException(ResultEnum.SUCCESS_BUT_NO_INFO);
 		}
 	}
+
+	public void getDakaTasksStateByDakaIdAndDate(String info) {
+		// TODO Auto-generated method stub
+		JSONObject json = JSONObject.parseObject(info);
+		
+		int finishingid = json.getIntValue("finishingid");
+		
+		String year = json.getString("year");
+		String month = json.getString("month");
+		
+		Session s = HibernateUtil.getCurrentSession();
+		Transaction tx = s.beginTransaction();
+		
+		
+		
+		
+		Query q = s.createQuery("from DakaTask where dakaId = ? and commitDate like ?");
+		
+		q.setInteger(0, finishingid);
+	}
+
 }

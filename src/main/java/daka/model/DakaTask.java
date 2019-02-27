@@ -24,7 +24,7 @@ public class DakaTask {
 	@Column(name = "daka_id") 
 	private Integer dakaId;//打卡的id
 	@Column(name = "response") 
-	private String response; //回复
+	private String response; //审核后给用户的回复
 	@Column(name = "commit_date") 
 	private Date commitDate; //提交时间
 	@Column(name = "summary") 
