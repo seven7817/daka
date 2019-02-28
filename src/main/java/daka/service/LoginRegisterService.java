@@ -1,12 +1,10 @@
 package daka.service;
 
-import java.text.SimpleDateFormat;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -310,6 +308,7 @@ public class LoginRegisterService {
 			throw new MyException(ResultEnum.NOT_RECHARGE);
 		}
 	}
+
 	public void saveDakaInfo(String dakaInfo) {
 		JSONObject jsonDaka = JSONObject.parseObject(dakaInfo);
 		System.out.println("接受到的打卡信息是" + jsonDaka);
@@ -328,6 +327,7 @@ public class LoginRegisterService {
 		tx.commit();
 		throw new MyException(ResultEnum.SUCCESS);
 	}
+
 	@SuppressWarnings("null")
 	public void getFinishing(String email) {
 		// TODO Auto-generated method stub
@@ -337,23 +337,29 @@ public class LoginRegisterService {
 		Transaction tx = s.beginTransaction();
 		Query q = s.createQuery("from Daka where Email = ? ");
 		q.setString(0, Email);
-		@SuppressWarnings({ "unchecked"})
+		@SuppressWarnings({ "unchecked" })
 		List<Daka> dakaList = q.list();
 		List<Daka> dakaList1 = new ArrayList<Daka>();
-		//判断打卡是否已经结束了
-		for(Daka daka :dakaList) {
+		// 判断打卡是否已经结束了
+		System.out.println(dakaList.size());
+		
+		for (Daka daka : dakaList) {
 			Date now = new Date();
 //			System.out.println("now:"+now.getTime());
 //			System.out.println("daka:"+daka.getStartDate().getTime());
-			if(now.getTime()-daka.getStartDate().getTime() < 1000*60*60 *Integer.parseInt(daka.getTimeInterval())  * Integer.parseInt(daka.getTimes())) {
+//			System.out.println(1000 * 60 * 60 * Long.parseLong(daka.getTimeInterval()) * Long.parseLong(daka.getTimes()));
+//			System.out.println(daka.getTimeInterval());
+//			System.out.println(daka.getTimes());
+			//毫秒值最好用long类型来存储，不然要爆炸
+			if (now.getTime() - daka.getStartDate().getTime() < 1000 * 60 * 60
+					* Long.parseLong(daka.getTimeInterval()) * Long.parseLong(daka.getTimes())) {
 				dakaList1.add(daka);
 			}
 		}
 		tx.commit();
-		if(dakaList1.size()!=0){
+		if (dakaList1.size() != 0) {
 			throw new MyException(ResultEnum.SUCCESS, dakaList1);
-		}
-		else {
+		} else {
 			throw new MyException(ResultEnum.SUCCESS_BUT_NO_INFO);
 		}
 	}
@@ -361,21 +367,38 @@ public class LoginRegisterService {
 	public void getDakaTasksStateByDakaIdAndDate(String info) {
 		// TODO Auto-generated method stub
 		JSONObject json = JSONObject.parseObject(info);
-		
-		int finishingid = json.getIntValue("finishingid");
-		
-		String year = json.getString("year");
-		String month = json.getString("month");
-		
+		//毫秒数太大要用big类型来存贮，且big类型的除法跟int不一样，不能直接用/来除，且big类型只能和big类型的数据进行运算
+		int dakaId = json.getIntValue("dakaId");
+		BigDecimal startDate = json.getBigDecimal("startDate");
+		System.out.println("startDate"+startDate);
+		int timeInterval = json.getIntValue("timeInterval");
 		Session s = HibernateUtil.getCurrentSession();
 		Transaction tx = s.beginTransaction();
-		
-		
-		
-		
-		Query q = s.createQuery("from DakaTask where dakaId = ? and commitDate like ?");
-		
-		q.setInteger(0, finishingid);
+		// 2019-02-27 00:00:00
+		//UNIX_TIMESTAMP 得到的时秒数不是毫秒数
+		Query q = s.createSQLQuery(
+				"select CEILING((UNIX_TIMESTAMP(commit_date) - ?)/?/60/60) as numorder ,is_passed "
+						+ "from daka_task where daka_id = ? "
+						+ "group by CEILING((UNIX_TIMESTAMP(commit_date) - ?)/?/60/60) ,is_passed");
+		q.setBigDecimal(0, startDate);
+		q.setInteger(1, timeInterval);
+		q.setInteger(2, dakaId);
+		q.setBigDecimal(3, startDate);
+		q.setInteger(4, timeInterval);
+		@SuppressWarnings("unchecked")
+		List<Object[]> tasksStateList = q.list();
+//		System.out.println("tasksStateList"+tasksStateList);
+		tx.commit();
+//		for(Object [] objArray :tasksStateList) {
+//			System.out.print(objArray[0]);
+//			System.out.print(":");
+//			System.out.println(objArray[1]);
+//		}
+		if (tasksStateList != null) {
+			throw new MyException(ResultEnum.SUCCESS, tasksStateList);
+		} else {
+			throw new MyException(ResultEnum.SUCCESS_BUT_NO_INFO);
+		}
 	}
 
 }
