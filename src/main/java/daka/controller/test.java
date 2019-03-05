@@ -134,6 +134,12 @@ public class test {
 		System.out.println("getDakaTasksStateByDakaIdAndStartDateAndTimeInterval"+info);
 		loginRegisterService.getDakaTasksStateByDakaIdAndDate(info);
 	}
+	//得到七牛云的简单上传凭证
+	@PostMapping(value="/getSimpleToken",produces = "application/json;charset=utf-8")
+	public void getSimpleToken() {
+		System.out.println("getSimpleToken");
+		loginRegisterService.getSimpleToken();
+	}
 	
 	
 }

@@ -22,6 +22,7 @@ import daka.model.Order;
 import daka.model.RegisterEmailVerificationCode;
 import daka.model.User;
 import daka.utils.GetDateByString;
+import daka.utils.GetToken4qiniu;
 import daka.utils.GetVerificationCode;
 import daka.utils.HibernateUtil;
 import daka.utils.SendMail;
@@ -399,6 +400,9 @@ public class LoginRegisterService {
 		} else {
 			throw new MyException(ResultEnum.SUCCESS_BUT_NO_INFO);
 		}
+	}
+	public void getSimpleToken() {
+		throw new MyException(ResultEnum.SUCCESS, GetToken4qiniu.getSimpleToken());
 	}
 
 }
