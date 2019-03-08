@@ -26,7 +26,7 @@ public class DakaTask {
 	@Column(name = "response") 
 	private String response; //审核后给用户的回复
 	@Column(name = "commit_date") 
-	private Date commitDate; //提交时间
+	private Date commitDate = new Date(); //提交时间
 	@Column(name = "summary") 
 	private String summary;  //总结
 	@Column(name = "img1") 
@@ -41,7 +41,14 @@ public class DakaTask {
 	private String img5;
 	@Column(name = "is_passed") 
 	private String isPassed="0";  //是否通过，0表示待审核，1表示通过，2表示未通过
-	
+	@Column(name = "cycle") 
+	private String cycle="0";  //是否通过，0表示待审核，1表示通过，2表示未通过
+	public String getCycle() {
+		return cycle;
+	}
+	public void setCycle(String cycle) {
+		this.cycle = cycle;
+	}
 	public String getIsPassed() {
 		return isPassed;
 	}
@@ -112,6 +119,7 @@ public class DakaTask {
 	public String toString() {
 		return "DakaTask [id=" + id + ", dakaId=" + dakaId + ", response=" + response + ", commitDate=" + commitDate
 				+ ", summary=" + summary + ", img1=" + img1 + ", img2=" + img2 + ", img3=" + img3 + ", img4=" + img4
-				+ ", img5=" + img5 + ", isPassed=" + isPassed + "]";
+				+ ", img5=" + img5 + ", isPassed=" + isPassed + ", cycle=" + cycle + "]";
 	}
+	
 }

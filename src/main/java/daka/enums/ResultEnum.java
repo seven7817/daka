@@ -14,6 +14,7 @@ public enum ResultEnum {
 	NOT_RECHARGE(9,"您还没有充值"),
 	Date_FORMAT_WRONG(10,"日期转换错误"),
 	SUCCESS_BUT_NO_INFO(11,"查询不到相关数据"),
+//	HAD_SUBMIT(12,"查询不到相关数据"),
 	;
 	private Integer code ;
 	private String msg;
