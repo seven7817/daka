@@ -516,4 +516,22 @@ public class LoginRegisterService {
 		throw new MyException(ResultEnum.SUCCESS,nums);
 	}
 
+	public void getDakaInfoOfPage(String pageNum) {
+		// TODO Auto-generated method stub
+		JSONObject jsonEmail = JSONObject.parseObject(pageNum);
+		int pageNumInt = jsonEmail.getIntValue("pageNum");
+		Session s = HibernateUtil.getCurrentSession();
+		Transaction tx = s.beginTransaction();
+		Query q = s.createQuery("from Daka order by applyDate desc");
+		q.setFirstResult((pageNumInt-1)*7);
+		q.setMaxResults(7);
+		List<Daka> dakaList = q.list();
+		
+		for(Daka daka : dakaList) {
+			System.out.println(daka);
+		}
+		tx.commit();
+		throw new MyException(ResultEnum.SUCCESS,dakaList);
+	}
+
 }

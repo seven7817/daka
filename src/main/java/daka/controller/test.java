@@ -173,6 +173,12 @@ public class test {
 		System.out.println("getAllDakaInfo");
 		loginRegisterService.getAllDakaInfo();
 	}
+	//首页分页功能选择页数变更打卡信息
+	@PostMapping(value = "/getDakaInfoOfPage", produces = "application/json;charset=utf-8")
+	public void getDakaInfoOfPage(@RequestBody String pageNum) {
+		System.out.println("getDakaInfoOfPage:"+pageNum);
+		loginRegisterService.getDakaInfoOfPage(pageNum);
+	}
 	
 	// 登录用户在web首页查看自己的打卡情况
 	@PostMapping(value = "/getUserNumsOfDaka", produces = "application/json;charset=utf-8")
@@ -180,4 +186,8 @@ public class test {
 		System.out.println("getUserNumsOfDaka" + Email);
 		loginRegisterService.getUserNumsOfDaka(Email);
 	}
+	
+	
+	
+	
 }
