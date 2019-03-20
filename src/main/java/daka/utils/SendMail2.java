@@ -13,6 +13,9 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import daka.enums.ResultEnum;
+import daka.exception.MyException;
+
 public class SendMail2 {
 	
 
@@ -74,10 +77,12 @@ public class SendMail2 {
 			// 邮件异常
 			System.out.println("发送邮箱失败");
 			e.printStackTrace();
+			throw new MyException(ResultEnum.MAIL_WRONG);
 		} catch (IOException e) {
 			// properties文件加载异常
 			System.out.println("发送邮箱失败");
 			e.printStackTrace();
+			throw new MyException(ResultEnum.MAIL_WRONG);
 		}
 
 	}
