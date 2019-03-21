@@ -2,8 +2,11 @@ package daka.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import daka.service.DakaService;
 @Controller
@@ -81,5 +84,20 @@ public class DakaController {
 		public void getUserNumsOfDaka(@RequestBody String Email) {
 			System.out.println("getUserNumsOfDaka" + Email);
 			dakaService.getUserNumsOfDaka(Email);
+		}
+		//用于手机扫码
+		@GetMapping(value = "/index", produces = "application/json;charset=utf-8")
+		public ModelAndView scanCode(@RequestParam("Email") String Email, @RequestParam("money") String money,
+				@RequestParam("description") String description) {
+			System.out.println("aaaa");
+			System.out.println(Email);
+			System.out.println(money);
+			System.out.println(description);
+			ModelAndView modelAndView = new ModelAndView();
+			modelAndView.setViewName("index");
+			modelAndView.addObject("Email", Email);
+			modelAndView.addObject("money", money);
+			modelAndView.addObject("description", description);
+			return modelAndView;
 		}
 }

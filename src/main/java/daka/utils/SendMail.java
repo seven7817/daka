@@ -136,13 +136,5 @@ public class SendMail {
             return false;  
         }  
         return true;  
-    }  
-
-    /** 
-     * 发送邮件 
-     *  
-     * @return 
-     */  
-     
-
+    }   
 }
