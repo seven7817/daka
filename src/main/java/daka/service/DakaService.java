@@ -4,15 +4,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
 import daka.enums.ResultEnum;
 import daka.exception.MyException;
 import daka.model.Daka;
@@ -85,7 +82,6 @@ public class DakaService {
 		throw new MyException(ResultEnum.SUCCESS);
 	}
 	public void getFinishing(String email) {
-		// TODO Auto-generated method stub
 		JSONObject jsonEmail = JSONObject.parseObject(email);
 		String Email = jsonEmail.getString("Email");
 		Session s = HibernateUtil.getCurrentSession();
@@ -216,6 +212,7 @@ public class DakaService {
 			Session s = HibernateUtil.getCurrentSession();
 			Transaction tx = s.beginTransaction();
 			Query q = s.createQuery("from Daka order by applyDate desc");
+			@SuppressWarnings("unchecked")
 			List<Daka> dakaList = q.list();
 			Object [] result = new Object[2];
 			
@@ -270,6 +267,7 @@ public class DakaService {
 			Query q = s.createQuery("from Daka order by applyDate desc");
 			q.setFirstResult((pageNumInt-1)*7);
 			q.setMaxResults(7);
+			@SuppressWarnings("unchecked")
 			List<Daka> dakaList = q.list();
 			
 			for(Daka daka : dakaList) {

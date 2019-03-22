@@ -3,6 +3,10 @@ package daka.exception;
 import daka.enums.ResultEnum;
 
 public class MyException extends RuntimeException {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Integer code ;
 	private Object object;
 	public MyException(ResultEnum resultEnum) {
