@@ -32,4 +32,38 @@ public class PersonInfoController {
 		System.out.println("saveBaseInfo" + userInfo);
 		personInfoService.saveBaseInfo(userInfo);
 	}
+	/*
+	 * 用于向指定用户进行好友申请
+	 */
+	@PostMapping(value = "/applyFriend", produces = "application/json;charset=utf-8")
+	public void applyFriend(@RequestBody String eamilInfo) {
+		System.out.println("applyFriend" + eamilInfo);
+		personInfoService.applyFriend(eamilInfo);
+	}
+	/*
+	 * 用于获取别人对自己的好友申请
+	 */
+	@PostMapping(value = "/getMsgAboutApplyFriend", produces = "application/json;charset=utf-8")
+	public void getMsgAboutApplyFriend(@RequestBody String eamil) {
+		System.out.println("getMsgAboutApplyFriend" + eamil);
+		personInfoService.getMsgAboutApplyFriend(eamil);
+	}
+	/**
+	 * 选择是否通过其他用户对自身的好友申请
+	 * @param eamil
+	 */
+	@PostMapping(value = "/choosePass", produces = "application/json;charset=utf-8")
+	public void choosePass(@RequestBody String info) {
+		System.out.println("choosePass" + info);
+		personInfoService.choosePass(info);
+	}
+	/**
+	 * 获取好友列表
+	 * @param info
+	 */
+	@PostMapping(value = "/getFriends", produces = "application/json;charset=utf-8")
+	public void getFriends(@RequestBody String email) {
+		System.out.println("getFriends" + email);
+		personInfoService.getFriends(email);
+	}
 }

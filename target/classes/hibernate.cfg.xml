@@ -19,7 +19,8 @@
 	<session-factory>
 		<!-- 第一部分：连接数据的信息   位置在D:\java\lib\hibernate-release-5.0.7.Final\project\etc\hibernate.properties 的mysql部分-->
 		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/daka?useSSL=false</property>
+		<!-- <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/daka?useSSL=false</property> -->
+		<property name="hibernate.connection.url">jdbc:mysql://47.101.212.238:3306/daka?useSSL=false</property>
 		<property name="hibernate.connection.username">root</property>
 		<property name="hibernate.connection.password">123456</property>
 		<!-- 数据库的方言，就是不同数据库之间的扩展 -->
@@ -39,6 +40,8 @@
 		<mapping class = "daka.model.Order"></mapping>
 		<mapping class = "daka.model.Daka"></mapping>
 		<mapping class = "daka.model.DakaTask"></mapping>
+		<mapping class = "daka.model.FriendApply"></mapping>
+		<mapping class = "daka.model.Friends"></mapping>
 	</session-factory>
 </hibernate-configuration>
 
