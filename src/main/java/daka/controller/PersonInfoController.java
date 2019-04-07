@@ -66,4 +66,25 @@ public class PersonInfoController {
 		System.out.println("getFriends" + email);
 		personInfoService.getFriends(email);
 	}
+	/**
+	 * 根据两个用户的email得到对应的聊天记录
+	 * @param emails
+	 */
+	@PostMapping(value = "/getChatInfoByTwoEmail", produces = "application/json;charset=utf-8")
+	public void getChatInfoByTwoEmail(@RequestBody String emails) {
+		System.out.println("getChatInfoByTwoEmail" + emails);
+		personInfoService.getChatInfoByTwoEmail(emails);
+	}
+	/**
+	 * 给某个好友发送消息
+	 * @param emails
+	 */
+	@PostMapping(value = "/sendMsg", produces = "application/json;charset=utf-8")
+	public void sendMsg(@RequestBody String info) {
+		System.out.println("sendMsg" + info);
+		personInfoService.sendMsg(info);
+	}
+	
+	
+	
 }

@@ -13,6 +13,7 @@ import com.alibaba.fastjson.JSONObject;
 
 import daka.enums.ResultEnum;
 import daka.exception.MyException;
+import daka.model.CommunicationRecord;
 import daka.model.FriendApply;
 import daka.model.Friends;
 import daka.model.User;
@@ -134,5 +135,46 @@ public class PersonInfoService {
 		
 		tx.commit();
 		throw new MyException(ResultEnum.SUCCESS,msgs);
+	}
+	public void getChatInfoByTwoEmail(String emails) {
+		// TODO Auto-generated method stub
+		JSONObject jsonobject = JSONObject.parseObject(emails);
+		String Email1 = jsonobject.getString("email1");
+		String Email2 = jsonobject.getString("email2");
+		
+		Session s = HibernateUtil.getCurrentSession();
+		Transaction tx = s.beginTransaction();
+		Query q = s.createQuery("from CommunicationRecord where fromEmail = ? and toEmail = ? or fromEmail = ? and toEmail = ? order by applyDate asc");
+		q.setString(0, Email1);
+		q.setString(1, Email2);
+		q.setString(2, Email2);
+		q.setString(3, Email1);
+		System.out.println(Email1);
+		System.out.println(Email2);
+		@SuppressWarnings({ "rawtypes" })
+		List chatRecord = new ArrayList<CommunicationRecord>();
+		chatRecord = q.list();
+		
+		
+		tx.commit();
+		throw new MyException(ResultEnum.SUCCESS,chatRecord);
+	}
+	public void sendMsg(String info) {
+		JSONObject jsonobject = JSONObject.parseObject(info);
+		String Email1 = jsonobject.getString("email1");
+		String Email2 = jsonobject.getString("email2");
+		String msg = jsonobject.getString("msg");
+		CommunicationRecord communicationRecord = new CommunicationRecord();
+		communicationRecord.setFromEmail(Email1);
+		communicationRecord.setToEmail(Email2);
+		communicationRecord.setContent(msg);
+		
+		Session s = HibernateUtil.getCurrentSession();
+		Transaction tx = s.beginTransaction();
+		s.save(communicationRecord);
+		System.out.println(Email1);
+		System.out.println(Email2);
+		tx.commit();
+		throw new MyException(ResultEnum.SUCCESS);
 	}
 }
